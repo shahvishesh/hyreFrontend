@@ -12,3 +12,7 @@ export const getJobs = () => {
 export const getJobById = (jobId) => {
   return axiosInstance.get(`/api/Jobs/${jobId}`);
 };
+
+export const updateJob = (jobId, data) => {
+  return axiosInstance.put(`/api/Jobs/${jobId}`, data);
+};

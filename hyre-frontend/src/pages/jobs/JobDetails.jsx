@@ -54,7 +54,7 @@ export default function JobDetails() {
           variant="contained"
           startIcon={<Edit />}
           onClick={() =>
-            navigate(`/dashboard/jobs/edit/${job.jobId ?? job.id}`)
+            navigate(`/dashboard/jobs/edit/${job.jobID}`)
           }
         >
           Edit Job
