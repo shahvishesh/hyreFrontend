@@ -58,7 +58,7 @@ export default function JobsList() {
           <TableBody>
             {jobs.map((job) => (
               <TableRow
-                key={`${job.jobId ?? job.id}-${job.title}`}
+                key={job.jobID}
               >
                 <TableCell>{job.title}</TableCell>
                 <TableCell>{job.companyName}</TableCell>
@@ -72,7 +72,7 @@ export default function JobsList() {
                   <IconButton
                     onClick={() =>
                       navigate(
-                        `/dashboard/jobs/${job.jobId ?? job.id}`
+                        `/dashboard/jobs/${job.jobID}`
                       )
                     }
                   >
@@ -82,7 +82,7 @@ export default function JobsList() {
                   <IconButton
                     onClick={() =>
                       navigate(
-                        `/dashboard/jobs/edit/${job.jobId ?? job.id}`
+                        `/dashboard/jobs/edit/${job.jobID}`
                       )
                     }
                   >

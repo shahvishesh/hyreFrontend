@@ -9,8 +9,8 @@ import { Navigate } from "react-router-dom";
 import CreateJob from "../pages/jobs/CreateJob";
 import JobsLayout from "../pages/jobs/JobsLayout";
 import JobsHome from "../pages/jobs/JobsHome";
-/* import EditJob from "../pages/jobs/EditJob";
-import JobDetails from "../pages/jobs/JobDetails"; */
+/* import EditJob from "../pages/jobs/EditJob";*/
+import JobDetails from "../pages/jobs/JobDetails"; 
 import JobsList from "../pages/jobs/JobsList";
 
 export default function AppRoutes() {
@@ -28,6 +28,7 @@ export default function AppRoutes() {
             <Route index element={<JobsHome />} />
             <Route path="list" element={<JobsList />} />
             <Route path="create" element={<CreateJob />} />
+            <Route path=":jobId" element={<JobDetails />} />
             {/* <Route path="edit/:jobId" element={<EditJob />} />
             <Route path=":jobId" element={<JobDetails />} /> */}
           </Route>

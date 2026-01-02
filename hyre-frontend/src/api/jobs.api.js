@@ -8,3 +8,7 @@ export const createJob = (data) => {
 export const getJobs = () => {
   return axiosInstance.get("/api/Jobs");
 };
+
+export const getJobById = (jobId) => {
+  return axiosInstance.get(`/api/Jobs/${jobId}`);
+};
