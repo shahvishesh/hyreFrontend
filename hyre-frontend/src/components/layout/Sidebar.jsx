@@ -2,6 +2,7 @@ import {
   Drawer,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   Toolbar,
 } from "@mui/material";
@@ -23,13 +24,24 @@ export default function Sidebar({ drawerWidth }) {
     >
       <Toolbar />
       <List>
-        <ListItem button onClick={() => navigate("/dashboard")}>
-          <ListItemText primary="Dashboard" />
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => navigate("/dashboard")}>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
         </ListItem>
 
-        <ListItem button onClick={() => navigate("/dashboard/candidates")}>
-          <ListItemText primary="Candidates" />
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => navigate("/dashboard/candidates")}>
+            <ListItemText primary="Candidates" />
+          </ListItemButton>
         </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => navigate("/dashboard/jobs")}>
+            <ListItemText primary="Jobs" />
+          </ListItemButton>
+        </ListItem>
+
       </List>
     </Drawer>
   );
