@@ -16,3 +16,7 @@ export const getJobById = (jobId) => {
 export const updateJob = (jobId, data) => {
   return axiosInstance.put(`/api/Jobs/${jobId}`, data);
 };
+
+export const deleteJob = (jobId) => {
+  return axiosInstance.delete(`/api/Jobs/${jobId}`);
+};

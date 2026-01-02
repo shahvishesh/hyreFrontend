@@ -10,10 +10,15 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
-import { Edit, Visibility } from "@mui/icons-material";
+import { Edit, Visibility, Delete } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { getJobs } from "../../api/jobs.api";
+import { getJobs, deleteJob } from "../../api/jobs.api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -22,7 +27,12 @@ export default function JobsList() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  // 🔴 Delete dialog state
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState(null);
+
+  const loadJobs = () => {
+    setLoading(true);
     getJobs()
       .then((res) => {
         console.log("JOBS API RESPONSE:", res.data);
@@ -30,7 +40,35 @@ export default function JobsList() {
       })
       .catch(() => toast.error("Failed to load jobs"))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadJobs();
   }, []);
+
+  // Open dialog
+  const handleOpenDeleteDialog = (jobID) => {
+    setJobToDelete(jobID);
+    setOpenDeleteDialog(true);
+  };
+
+  // Close dialog
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setJobToDelete(null);
+  };
+
+  // Confirm delete
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteJob(jobToDelete);
+      toast.success("Job deleted successfully");
+      handleCloseDeleteDialog();
+      loadJobs();
+    } catch {
+      toast.error("Failed to delete job");
+    }
+  };
 
   if (loading) {
     return <CircularProgress />;
@@ -57,9 +95,7 @@ export default function JobsList() {
 
           <TableBody>
             {jobs.map((job) => (
-              <TableRow
-                key={job.jobID}
-              >
+              <TableRow key={job.jobID}>
                 <TableCell>{job.title}</TableCell>
                 <TableCell>{job.companyName}</TableCell>
                 <TableCell>{job.location}</TableCell>
@@ -71,9 +107,7 @@ export default function JobsList() {
                 <TableCell align="center">
                   <IconButton
                     onClick={() =>
-                      navigate(
-                        `/dashboard/jobs/${job.jobID}`
-                      )
+                      navigate(`/dashboard/jobs/${job.jobID}`)
                     }
                   >
                     <Visibility />
@@ -81,12 +115,19 @@ export default function JobsList() {
 
                   <IconButton
                     onClick={() =>
-                      navigate(
-                        `/dashboard/jobs/edit/${job.jobID}`
-                      )
+                      navigate(`/dashboard/jobs/edit/${job.jobID}`)
                     }
                   >
                     <Edit />
+                  </IconButton>
+
+                  <IconButton
+                    color="error"
+                    onClick={() =>
+                      handleOpenDeleteDialog(job.jobID)
+                    }
+                  >
+                    <Delete />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -102,6 +143,34 @@ export default function JobsList() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* ================= Delete Confirmation Dialog ================= */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+      >
+        <DialogTitle>Delete Job</DialogTitle>
+
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete this job?  
+            This action cannot be undone.
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>
+            Cancel
+          </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleConfirmDelete}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
