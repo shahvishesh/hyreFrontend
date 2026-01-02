@@ -31,12 +31,6 @@ export default function Sidebar({ drawerWidth }) {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton onClick={() => navigate("/dashboard/candidates")}>
-            <ListItemText primary="Candidates" />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem disablePadding>
           <ListItemButton onClick={() => navigate("/dashboard/jobs")}>
             <ListItemText primary="Jobs" />
           </ListItemButton>
@@ -44,6 +38,12 @@ export default function Sidebar({ drawerWidth }) {
 
         <ListItemButton onClick={() => navigate("/dashboard/candidates")}>
           <ListItemText primary="Candidates" />
+        </ListItemButton>
+
+        <ListItemButton
+          onClick={() => navigate("/dashboard/screening")}
+        >
+          <ListItemText primary="Screening" />
         </ListItemButton>
 
       </List>

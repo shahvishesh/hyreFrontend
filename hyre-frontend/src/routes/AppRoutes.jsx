@@ -20,6 +20,12 @@ import UploadCandidatesExcel from "../pages/candidates/UploadCandidatesExcel";
 import CandidatesList from "../pages/candidates/CandidatesList";
 import CandidateDetails from "../pages/candidates/CandidateDetails";
 
+import ScreeningLayout from "../pages/screening/ScreeningLayout";
+import ScreeningHome from "../pages/screening/ScreeningHome";
+import ScreeningJobsList from "../pages/screening/ScreeningJobsList";
+import JobScreeningCandidates from "../pages/screening/JobScreeningCandidates";
+import ReviewCandidate from "../pages/screening/ReviewCandidate";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -54,11 +60,20 @@ export default function AppRoutes() {
               path=":candidateId"
               element={<CandidateDetails />}
             />
-
-            {/* <Route path="list" element={<CandidatesList />} />
-            <Route path=":candidateId" element={<CandidateDetails />} /> */}
           </Route>
 
+          <Route path="screening" element={<ScreeningLayout />}>
+            <Route index element={<ScreeningHome />} />
+            <Route path="list" element={<ScreeningJobsList />} />
+            <Route
+              path=":jobId"
+              element={<JobScreeningCandidates />}
+            />
+            <Route
+    path=":jobId/review/:candidateJobId"
+    element={<ReviewCandidate />}
+  />
+          </Route>
         </Route>
       </Route>
     </Routes>
