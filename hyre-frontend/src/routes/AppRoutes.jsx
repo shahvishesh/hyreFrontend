@@ -12,6 +12,11 @@ import JobsHome from "../pages/jobs/JobsHome";
 import EditJob from "../pages/jobs/EditJob";
 import JobDetails from "../pages/jobs/JobDetails"; 
 import JobsList from "../pages/jobs/JobsList";
+import CandidatesLayout from "../pages/candidates/CandidatesLayout";
+import CandidatesHome from "../pages/candidates/CandidatesHome";
+import CreateCandidate from "../pages/candidates/CreateCandidate";
+/* import CandidatesList from "../pages/candidates/CandidatesList";
+import CandidateDetails from "../pages/candidates/CandidateDetails"; */
 
 export default function AppRoutes() {
   return (
@@ -32,8 +37,13 @@ export default function AppRoutes() {
             <Route path="edit/:jobId" element={<EditJob />} />
           </Route>
 
-          {/* <Route path="jobs/create" element={<CreateJob />} /> */}
-          {/* <Route path="candidates" element={<CandidateList />} /> */}
+          <Route path="/dashboard/candidates" element={<CandidatesLayout />}>
+            <Route index element={<CandidatesHome />} />
+            <Route path="create" element={<CreateCandidate />} />
+            {/* <Route path="list" element={<CandidatesList />} />
+            <Route path=":candidateId" element={<CandidateDetails />} /> */}
+          </Route>
+
         </Route>
       </Route>
     </Routes>
