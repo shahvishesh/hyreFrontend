@@ -26,6 +26,10 @@ import ScreeningJobsList from "../pages/screening/ScreeningJobsList";
 import JobScreeningCandidates from "../pages/screening/JobScreeningCandidates";
 import ReviewCandidate from "../pages/screening/ReviewCandidate";
 
+import UsersRolesList from "../pages/admin/UsersRolesList";
+import RolesLayout from "../pages/admin/RolesLayout";
+import RolesHome from "../pages/admin/RolesHome";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -44,6 +48,12 @@ export default function AppRoutes() {
             <Route path=":jobId" element={<JobDetails />} />
             <Route path="edit/:jobId" element={<EditJob />} />
           </Route>
+
+          <Route path="/dashboard/admin" element={<RolesLayout />}>
+            <Route index element={<RolesHome />} />
+            <Route path="roles" element={<UsersRolesList />} />
+          </Route>
+
 
           <Route path="/dashboard/candidates" element={<CandidatesLayout />}>
             <Route index element={<CandidatesHome />} />

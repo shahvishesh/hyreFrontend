@@ -7,6 +7,8 @@ import {
   Toolbar,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import { ListItemIcon } from "@mui/material";
 
 export default function Sidebar({ drawerWidth }) {
   const navigate = useNavigate();
@@ -45,6 +47,15 @@ export default function Sidebar({ drawerWidth }) {
         >
           <ListItemText primary="Screening" />
         </ListItemButton>
+
+        <ListItemButton
+            onClick={() => navigate("/dashboard/admin/roles")}
+          >
+            <ListItemIcon>
+              <AdminPanelSettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Role Management" />
+          </ListItemButton>
 
       </List>
     </Drawer>
