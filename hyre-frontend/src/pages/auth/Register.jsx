@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   Grid,
+  Link,
 } from "@mui/material";
 import { register as registerUser } from "../../api/auth.api";
 import { useNavigate } from "react-router-dom";
@@ -110,6 +111,21 @@ export default function Register() {
           >
             Register
           </Button>
+
+          <Box mt={2} textAlign="center">
+            <Typography variant="body2">
+              Already have an account?{" "}
+              <Link
+                component="button"
+                type="button"
+                variant="body2"
+                onClick={() => navigate("/login")}
+                sx={{ cursor: "pointer" }}
+              >
+                Login here
+              </Link>
+            </Typography>
+          </Box>
         </form>
       </Box>
     </Container>

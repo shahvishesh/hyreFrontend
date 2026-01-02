@@ -5,6 +5,7 @@ import {
   Container,
   Typography,
   Box,
+  Link,
 } from "@mui/material";
 import { login } from "../../api/auth.api";
 import { useNavigate } from "react-router-dom";
@@ -57,6 +58,21 @@ export default function Login() {
           >
             Login
           </Button>
+
+          <Box mt={2} textAlign="center">
+            <Typography variant="body2">
+              New user?{" "}
+              <Link
+                component="button"
+                type="button"
+                variant="body2"
+                onClick={() => navigate("/register")}
+                sx={{ cursor: "pointer" }}
+              >
+                Register here
+              </Link>
+            </Typography>
+          </Box>
         </form>
       </Box>
     </Container>
