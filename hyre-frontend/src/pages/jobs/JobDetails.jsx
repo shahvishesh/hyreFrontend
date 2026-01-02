@@ -8,12 +8,24 @@ import {
   Divider,
   Grid,
   Typography,
+  TextField,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getJobById } from "../../api/jobs.api";
 import { toast } from "react-toastify";
+import { getCandidates } from "../../api/candidates.api";
+import { linkCandidateToJob } from "../../api/candidateJobs.api";
+import { getCandidateMatches } from "../../api/candidateMatching.api";
 
 export default function JobDetails() {
   const { jobId } = useParams();
@@ -21,6 +33,25 @@ export default function JobDetails() {
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [candidates, setCandidates] = useState([]);
+    const [selectedCandidate, setSelectedCandidate] = useState("");
+    const [linking, setLinking] = useState(false);
+
+    const [matches, setMatches] = useState([]);
+const [loadingMatches, setLoadingMatches] = useState(true);
+
+
+useEffect(() => {
+  getCandidates()
+    .then((res) => {
+      setCandidates(res.data.candidates);
+    })
+    .catch(() =>
+      toast.error("Failed to load candidates")
+    );
+}, []);
+
 
   useEffect(() => {
     getJobById(jobId)
@@ -30,6 +61,37 @@ export default function JobDetails() {
       .catch(() => toast.error("Failed to load job details"))
       .finally(() => setLoading(false));
   }, [jobId]);
+
+  useEffect(() => {
+  getCandidateMatches(jobId)
+    .then((res) => {
+      setMatches(res.data.matches);
+    })
+    .catch(() =>
+      toast.error("Failed to load candidate matches")
+    )
+    .finally(() => setLoadingMatches(false));
+}, [jobId]);
+
+const handleLinkCandidate = async (candidateID) => {
+  try {
+    await linkCandidateToJob(jobId, candidateID);
+
+    setMatches((prev) =>
+      prev.filter((m) => m.candidateID !== candidateID)
+    );
+
+    toast.success("Candidate linked successfully");
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message ||
+        "Failed to link candidate"
+    );
+  }
+};
+
+
+
 
   if (loading) {
     return <CircularProgress />;
@@ -118,6 +180,113 @@ export default function JobDetails() {
           )}
         </CardContent>
       </Card>
+
+      {/* ================= Candidate Matches ================= */}
+<Card sx={{ mb: 3 }}>
+  <CardContent>
+    <Typography variant="h6" mb={2}>
+      Candidate Matches
+    </Typography>
+
+    {loadingMatches ? (
+      <CircularProgress />
+    ) : (
+      <TableContainer component={Paper}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Experience</TableCell>
+              <TableCell>Match %</TableCell>
+              <TableCell>Matched Skills</TableCell>
+              <TableCell>Missing Skills</TableCell>
+              <TableCell align="center">Action</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {matches.map((m) => (
+              <TableRow key={m.candidateID}>
+                <TableCell>{m.fullName}</TableCell>
+                <TableCell>{m.email}</TableCell>
+                <TableCell>
+                  {m.totalExperience} yrs
+                </TableCell>
+
+                <TableCell>
+                  <Chip
+                    label={`${m.matchScore}%`}
+                    color={
+                      m.matchScore >= 70
+                        ? "success"
+                        : m.matchScore >= 40
+                        ? "warning"
+                        : "default"
+                    }
+                    size="small"
+                  />
+                </TableCell>
+
+                <TableCell>
+                  {m.matchedRequiredSkills
+                    .concat(m.matchedPreferredSkills)
+                    .map((s) => (
+                      <Chip
+                        key={s}
+                        label={s}
+                        size="small"
+                        sx={{ mr: 0.5, mb: 0.5 }}
+                      />
+                    ))}
+                </TableCell>
+
+                <TableCell>
+                  {m.missingRequiredSkills
+                    .concat(m.missingPreferredSkills)
+                    .map((s) => (
+                      <Chip
+                        key={s}
+                        label={s}
+                        size="small"
+                        color="error"
+                        sx={{ mr: 0.5, mb: 0.5 }}
+                      />
+                    ))}
+                </TableCell>
+
+                <TableCell align="center">
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={() =>
+                      handleLinkCandidate(m.candidateID)
+                    }
+                  >
+                    Link
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {matches.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  align="center"
+                >
+                  No matching candidates found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )}
+  </CardContent>
+</Card>
+
+
 
       {/* Interview Rounds */}
       <Card>
