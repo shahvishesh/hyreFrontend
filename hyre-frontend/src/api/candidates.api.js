@@ -11,3 +11,18 @@ export const createCandidate = (formData) => {
     }
   );
 };
+
+export const uploadCandidatesExcel = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return axiosInstance.post(
+    "/api/Candidate/upload-excel",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+};

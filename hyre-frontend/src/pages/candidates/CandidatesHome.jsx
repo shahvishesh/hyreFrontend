@@ -33,6 +33,25 @@ export default function CandidatesHome() {
           </CardContent>
         </Card>
       </Grid>
+
+      <Grid item xs={12} sm={4}>
+        <Card>
+          <CardContent>
+            <h3>Upload Excel</h3>
+            <Button
+              variant="outlined"
+              onClick={() =>
+                navigate("/dashboard/candidates/upload-excel")
+              }
+            >
+              Upload
+            </Button>
+          </CardContent>
+        </Card>
+      </Grid>
+
     </Grid>
+
+    
   );
 }
