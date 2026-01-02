@@ -15,9 +15,10 @@ import JobsList from "../pages/jobs/JobsList";
 import CandidatesLayout from "../pages/candidates/CandidatesLayout";
 import CandidatesHome from "../pages/candidates/CandidatesHome";
 import CreateCandidate from "../pages/candidates/CreateCandidate";
-/* import CandidatesList from "../pages/candidates/CandidatesList";
-import CandidateDetails from "../pages/candidates/CandidateDetails"; */
+
 import UploadCandidatesExcel from "../pages/candidates/UploadCandidatesExcel";
+import CandidatesList from "../pages/candidates/CandidatesList";
+import CandidateDetails from "../pages/candidates/CandidateDetails";
 
 export default function AppRoutes() {
   return (
@@ -44,6 +45,14 @@ export default function AppRoutes() {
             <Route
               path="/dashboard/candidates/upload-excel"
               element={<UploadCandidatesExcel />}
+            />
+            <Route
+              path="/dashboard/candidates/list"
+              element={<CandidatesList />}
+            />
+            <Route
+              path=":candidateId"
+              element={<CandidateDetails />}
             />
 
             {/* <Route path="list" element={<CandidatesList />} />

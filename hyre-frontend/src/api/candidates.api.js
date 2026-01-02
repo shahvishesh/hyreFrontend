@@ -26,3 +26,11 @@ export const uploadCandidatesExcel = (file) => {
     }
   );
 };
+
+export const getCandidates = () => {
+  return axiosInstance.get("/api/Candidate");
+};
+
+export const getCandidateById = (candidateId) => {
+  return axiosInstance.get(`/api/Candidate/${candidateId}`);
+};
