@@ -57,6 +57,10 @@ export default function Sidebar({ drawerWidth }) {
             <ListItemText primary="Role Management" />
           </ListItemButton>
 
+        <ListItemButton onClick={() => navigate("/dashboard/interviews")}>
+          <ListItemText primary="Interviews" />
+        </ListItemButton>
+
       </List>
     </Drawer>
   );

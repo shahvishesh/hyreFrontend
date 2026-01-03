@@ -30,6 +30,11 @@ import UsersRolesList from "../pages/admin/UsersRolesList";
 import RolesLayout from "../pages/admin/RolesLayout";
 import RolesHome from "../pages/admin/RolesHome";
 
+import InterviewsLayout from "../pages/interviews/InterviewsLayout";
+import InterviewsHome from "../pages/interviews/InterviewsHome";
+import InterviewList from "../pages/interviews/InterviewList";
+
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -80,9 +85,13 @@ export default function AppRoutes() {
               element={<JobScreeningCandidates />}
             />
             <Route
-    path=":jobId/review/:candidateJobId"
-    element={<ReviewCandidate />}
-  />
+              path=":jobId/review/:candidateJobId"
+              element={<ReviewCandidate />}
+            />
+          </Route>
+
+          <Route path="/dashboard/interviews" element={<InterviewsLayout />}>
+            <Route index element={<InterviewsHome />} />
           </Route>
         </Route>
       </Route>
