@@ -1,6 +1,7 @@
 import { Tabs, Tab, Box } from "@mui/material";
 import { useState } from "react";
 import InterviewList from "./InterviewList";
+import LiveInterviews from "./LiveInterviews";
 
 const TABS = [
   { label: "LIVE", key: "Live" },
@@ -29,8 +30,11 @@ export default function InterviewsTabs() {
         ))}
       </Tabs>
 
-    
-      <InterviewList tab={activeTab} />
+      {activeTab === "Live" ? (
+        <LiveInterviews />
+      ) : (
+        <InterviewList tab={activeTab} />
+      )}
     </Box>
   );
 }
