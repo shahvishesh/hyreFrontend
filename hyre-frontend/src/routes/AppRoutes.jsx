@@ -85,8 +85,8 @@ export default function AppRoutes() {
           </Route>
 
           <Route path="screening" element={<ScreeningLayout />}>
-            <Route index element={<ScreeningHome />} />
-            <Route path="list" element={<ScreeningJobsList />} />
+            {/* <Route index element={<ScreeningHome />} /> */}
+            <Route index element={<ScreeningJobsList />} />
             <Route
               path=":jobId"
               element={<JobScreeningCandidates />}

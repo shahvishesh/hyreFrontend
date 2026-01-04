@@ -12,6 +12,7 @@ import {
   Button,
   Chip,
 } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -32,7 +33,6 @@ export default function JobScreeningCandidates() {
 
         setJobTitle(data.jobTitle);
 
-        // ✅ Only candidates in Screening stage
         const screeningCandidates =
           data.linkedCandidates.filter(
             (c) => c.stage === "Screening"
@@ -52,6 +52,14 @@ export default function JobScreeningCandidates() {
 
   return (
     <Box>
+      <Button
+        startIcon={<ArrowBack />}
+        onClick={() => navigate(-1)}
+        sx={{ mb: 2 }}
+      >
+        Back
+      </Button>
+
       <Typography variant="h5" mb={3}>
         Screening – {jobTitle}
       </Typography>
