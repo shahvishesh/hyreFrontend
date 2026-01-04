@@ -8,3 +8,7 @@ export const getInterviewsByTab = (tab) => {
 export const getLiveInterviewDetails = () => {
   return axiosInstance.get("/api/Interview/live/details");
 }
+
+export const getRoundDetail = (candidateRoundId) => {
+  return axiosInstance.get(`/api/InterviewFeedback/round-detail/${candidateRoundId}`);
+}

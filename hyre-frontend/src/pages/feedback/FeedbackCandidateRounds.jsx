@@ -111,7 +111,7 @@ export default function FeedbackCandidateRounds() {
                         variant="contained"
                         onClick={() =>
                           navigate(
-                            `/dashboard/feedback/review/${r.candidateRoundID}`
+                            `/dashboard/feedback/${jobId}/candidate/${candidateId}/round/${r.candidateRoundID}/give-feedback`
                           )
                         }
                       >

@@ -39,6 +39,7 @@ import FeedbackHome from "../pages/feedback/FeedbackHome";
 import FeedbackJobsList from "../pages/feedback/FeedbackJobsList";
 import FeedbackCandidatesList from "../pages/feedback/FeedbackCandidatesList";
 import FeedbackCandidateRounds from "../pages/feedback/FeedbackCandidateRounds";
+import GiveFeedback from "../pages/feedback/GiveFeedback";
 
 export default function AppRoutes() {
   return (
@@ -103,6 +104,7 @@ export default function AppRoutes() {
             <Route index element={<FeedbackJobsList />} />
             <Route path=":jobId" element={<FeedbackCandidatesList />} />
             <Route path=":jobId/candidate/:candidateId" element={<FeedbackCandidateRounds />} />
+            <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/give-feedback" element={<GiveFeedback />} />
           </Route>
 
         </Route>
