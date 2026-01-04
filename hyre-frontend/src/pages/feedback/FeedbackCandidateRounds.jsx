@@ -123,7 +123,7 @@ export default function FeedbackCandidateRounds() {
                         variant="outlined"
                         onClick={() =>
                           navigate(
-                            `/dashboard/feedback/view/${r.candidateRoundID}`
+                            `/dashboard/feedback/${jobId}/candidate/${candidateId}/round/${r.candidateRoundID}/view-feedback`
                           )
                         }
                       >

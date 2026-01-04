@@ -6,3 +6,9 @@ export const submitInterviewFeedback = (payload) => {
     payload
   );
 };
+
+export const getInterviewFeedback = (candidateRoundId) => {
+  return axiosInstance.get(
+    `/api/InterviewFeedback/round/${candidateRoundId}/my-feedback`
+  );
+}
