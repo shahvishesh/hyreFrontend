@@ -61,6 +61,9 @@ export default function Sidebar({ drawerWidth }) {
           <ListItemText primary="Interviews" />
         </ListItemButton>
 
+        <ListItemButton onClick={() => navigate("/dashboard/feedback")}>
+          <ListItemText primary="Feedback" />
+        </ListItemButton>
       </List>
     </Drawer>
   );

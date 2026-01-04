@@ -34,6 +34,11 @@ import InterviewsLayout from "../pages/interviews/InterviewsLayout";
 import InterviewsHome from "../pages/interviews/InterviewsHome";
 import InterviewList from "../pages/interviews/InterviewList";
 
+import FeedbackLayout from "../pages/feedback/FeedbackLayout";
+import FeedbackHome from "../pages/feedback/FeedbackHome";
+import FeedbackJobsList from "../pages/feedback/FeedbackJobsList";
+import FeedbackCandidatesList from "../pages/feedback/FeedbackCandidatesList";
+import FeedbackCandidateRounds from "../pages/feedback/FeedbackCandidateRounds";
 
 export default function AppRoutes() {
   return (
@@ -93,6 +98,13 @@ export default function AppRoutes() {
           <Route path="/dashboard/interviews" element={<InterviewsLayout />}>
             <Route index element={<InterviewsHome />} />
           </Route>
+
+          <Route path="/dashboard/feedback" element={<FeedbackLayout />}>
+            <Route index element={<FeedbackJobsList />} />
+            <Route path=":jobId" element={<FeedbackCandidatesList />} />
+            <Route path=":jobId/candidate/:candidateId" element={<FeedbackCandidateRounds />} />
+          </Route>
+
         </Route>
       </Route>
     </Routes>
