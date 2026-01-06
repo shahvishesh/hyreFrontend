@@ -41,7 +41,7 @@ export default function RecruiterCandidateRounds() {
     if (activeTab === "pending") {
       url = `/api/RecruiterInterviewFeedback/job/${jobId}/candidate/${candidateId}?decisionState=Pending`;
     } else if (activeTab === "reschedule") {
-      url = `/api/RecruiterDecision/job/${jobId}/candidate/${candidateId}/reschedule`;
+      url = `/api/RecruiterInterviewFeedback/job/${jobId}/candidate/${candidateId}/expired`;
     } else {
       url = `/api/RecruiterInterviewFeedback/job/${jobId}/candidate/${candidateId}?decisionState=Decided`;
     }
