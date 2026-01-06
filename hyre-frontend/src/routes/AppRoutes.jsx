@@ -47,6 +47,7 @@ import RecruiterDecisionJobsList from "../pages/recruiter-decisions/RecruiterDec
 import RecruiterDecisionCandidatesList from "../pages/recruiter-decisions/RecruiterDecisionCandidatesList";
 import RecruiterDecisionCandidateRounds from "../pages/recruiter-decisions/RecruiterDecisionCandidateRounds";
 import RecruiterRoundDecision from "../pages/recruiter-decisions/RecruiterRoundDecision";
+import RecruiterCompletedDecision from "../pages/recruiter-decisions/RecruiterCompletedDecision";
 
 export default function AppRoutes() {
   return (
@@ -120,6 +121,7 @@ export default function AppRoutes() {
             <Route path=":jobId" element={<RecruiterDecisionCandidatesList />} />
             <Route path=":jobId/candidate/:candidateId" element={<RecruiterDecisionCandidateRounds />} />
             <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/decision" element={<RecruiterRoundDecision />} />
+            <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/completed-decision" element={<RecruiterCompletedDecision />} />
             
           </Route>
 

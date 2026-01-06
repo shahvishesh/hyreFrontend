@@ -134,7 +134,7 @@ export default function RecruiterCandidateRounds() {
                         size="small"
                         onClick={() =>
                           navigate(
-                            `/dashboard/recruiter-feedback/round/${round.candidateRoundID}/decision`
+                            `/dashboard/recruiter-decisions/${jobId}/candidate/${candidateId}/round/${round.candidateRoundID}/completed-decision`
                           )
                         }
                       >
