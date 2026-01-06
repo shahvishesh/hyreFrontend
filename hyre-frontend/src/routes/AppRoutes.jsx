@@ -49,6 +49,13 @@ import RecruiterDecisionCandidateRounds from "../pages/recruiter-decisions/Recru
 import RecruiterRoundDecision from "../pages/recruiter-decisions/RecruiterRoundDecision";
 import RecruiterCompletedDecision from "../pages/recruiter-decisions/RecruiterCompletedDecision";
 
+import ReviewerManagementLayout from "../pages/reviewer-management/ReviewerManagementLayout";
+import PendingAssignments from "../pages/reviewer-management/PendingAssignments";
+import CompletedAssignments from "../pages/reviewer-management/CompletedAssignments";
+import AssignReviewers from "../pages/reviewer-management/AssignReviewers"; 
+import ModifyReviewers from "../pages/reviewer-management/ModifyReviewers";
+import ViewReviewers from "../pages/reviewer-management/ViewReviewers";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -123,6 +130,15 @@ export default function AppRoutes() {
             <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/decision" element={<RecruiterRoundDecision />} />
             <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/completed-decision" element={<RecruiterCompletedDecision />} />
             
+          </Route>
+
+          <Route path="/dashboard/reviewer-management" element={<ReviewerManagementLayout />}>
+            <Route index element={<PendingAssignments />} />
+            <Route path="pending" element={<PendingAssignments />} />
+            <Route path="completed" element={<CompletedAssignments />} />
+            <Route path="assign/:jobId" element={<AssignReviewers />} /> 
+            <Route path="modify/:jobId" element={<ModifyReviewers />} />
+            <Route path="view/:jobId" element={<ViewReviewers />} />
           </Route>
 
         </Route>
