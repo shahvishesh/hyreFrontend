@@ -42,6 +42,12 @@ import FeedbackCandidateRounds from "../pages/feedback/FeedbackCandidateRounds";
 import GiveFeedback from "../pages/feedback/GiveFeedback";
 import ViewFeedback from "../pages/feedback/ViewFeedback";
 
+import RecruiterDecisionLayout from "../pages/recruiter-decisions/RecruiterDecisionLayout";
+import RecruiterDecisionJobsList from "../pages/recruiter-decisions/RecruiterDecisionJobsList";
+import RecruiterDecisionCandidatesList from "../pages/recruiter-decisions/RecruiterDecisionCandidatesList";
+import RecruiterDecisionCandidateRounds from "../pages/recruiter-decisions/RecruiterDecisionCandidateRounds";
+import RecruiterRoundDecision from "../pages/recruiter-decisions/RecruiterRoundDecision";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -107,6 +113,14 @@ export default function AppRoutes() {
             <Route path=":jobId/candidate/:candidateId" element={<FeedbackCandidateRounds />} />
             <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/give-feedback" element={<GiveFeedback />} />
             <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/view-feedback" element={<ViewFeedback />} />
+          </Route>
+
+          <Route path="/dashboard/recruiter-decisions" element={<RecruiterDecisionLayout />}>
+            <Route index element={<RecruiterDecisionJobsList />} />
+            <Route path=":jobId" element={<RecruiterDecisionCandidatesList />} />
+            <Route path=":jobId/candidate/:candidateId" element={<RecruiterDecisionCandidateRounds />} />
+            <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/decision" element={<RecruiterRoundDecision />} />
+            
           </Route>
 
         </Route>
