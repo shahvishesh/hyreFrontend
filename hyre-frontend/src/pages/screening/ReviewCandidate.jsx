@@ -127,7 +127,7 @@ const [candidate, setCandidate] = useState(null);
       );
 
       toast.success("Review saved successfully");
-      navigate(`/dashboard/screening/${jobId}`);
+      navigate(`/dashboard/screening/${jobId}`, { replace: true });
     } catch (err) {
       toast.error(
         err.response?.data?.message ||
