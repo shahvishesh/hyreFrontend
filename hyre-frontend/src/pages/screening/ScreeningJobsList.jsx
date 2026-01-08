@@ -1,31 +1,37 @@
 import {
   Box,
-  Card,
-  CardContent,
-  CircularProgress,
-  Grid,
-  Typography,
   Button,
+  Chip,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getJobs } from "../../api/jobs.api";
 import { toast } from "react-toastify";
+import axiosInstance from "../../api/axiosInstance";
 
 export default function ScreeningJobsList() {
   const navigate = useNavigate();
-
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  /* ================= Load jobs ================= */
   useEffect(() => {
-    getJobs()
+    axiosInstance
+      .get("/api/CandidateReview/reviewer/jobs")
       .then((res) => {
-        // ✅ Only OPEN jobs for screening
-        const openJobs = res.data.filter(
-          (job) => job.status === "Open"
+        // Sort by pending profiles count (highest first)
+        const sortedJobs = [...res.data].sort(
+          (a, b) => (b.pendingProfilesCount || 0) - (a.pendingProfilesCount || 0)
         );
-        setJobs(openJobs);
+        setJobs(sortedJobs);
       })
       .catch(() =>
         toast.error("Failed to load screening jobs")
@@ -39,50 +45,80 @@ export default function ScreeningJobsList() {
 
   return (
     <Box>
-      <Typography variant="h5" mb={3}>
-        Screening – Open Jobs
+      <Typography variant="h6" mb={2}>
+        Jobs Requiring Screening
       </Typography>
 
-      <Grid container spacing={2}>
-        {jobs.map((job) => (
-          <Grid item xs={12} md={6} key={job.jobID}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">
-                  {job.title}
-                </Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Job Title</TableCell>
+              <TableCell>Company</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Experience</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell align="center">Pending Profiles</TableCell>
+              <TableCell align="center">Action</TableCell>
+            </TableRow>
+          </TableHead>
 
-                <Typography color="text.secondary">
-                  {job.companyName} • {job.location}
-                </Typography>
-
-                <Typography mt={1}>
-                  Experience: {job.minExperience} –{" "}
-                  {job.maxExperience} yrs
-                </Typography>
-
-                <Button
-                  sx={{ mt: 2 }}
-                  variant="contained"
-                  onClick={() =>
-                    navigate(
-                      `/dashboard/screening/${job.jobID}`
-                    )
-                  }
+          <TableBody>
+            {jobs.map((job) => (
+              <TableRow
+                key={job.jobID}
                 >
-                  View Candidates
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+                <TableCell>{job.title}</TableCell>
+                <TableCell>{job.companyName}</TableCell>
+                <TableCell>{job.location}</TableCell>
+                <TableCell>
+                  {job.minExperience} –{" "}
+                  {job.maxExperience} yrs
+                </TableCell>
+                <TableCell>{job.status}</TableCell>
+                <TableCell align="center">
+                  <Chip
+                    label={job.pendingProfilesCount}
+                    color={
+                      job.pendingProfilesCount > 5
+                        ? "error"
+                        : job.pendingProfilesCount > 2
+                        ? "warning"
+                        : job.pendingProfilesCount > 0
+                        ? "primary"
+                        : "default"
+                    }
+                    size="small"
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  <Button
+                    variant="contained"
+                    onClick={() =>
+                      navigate(
+                        `/dashboard/screening/${job.jobID}`
+                      )
+                    }
+                  >
+                    View Candidates
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
 
-        {jobs.length === 0 && (
-          <Typography>
-            No open jobs available for screening
-          </Typography>
-        )}
-      </Grid>
+            {jobs.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  align="center"
+                >
+                  No jobs found for screening
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }

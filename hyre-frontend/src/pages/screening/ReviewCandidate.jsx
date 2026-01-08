@@ -5,7 +5,11 @@ import {
   CardContent,
   Checkbox,
   CircularProgress,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
     Chip,
@@ -31,8 +35,14 @@ const [candidate, setCandidate] = useState(null);
 
   const [skills, setSkills] = useState([]);
   const [comment, setComment] = useState("");
+  const [decision, setDecision] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState({
+    decision: false,
+    comment: false,
+    skills: {},
+  });
 
   useEffect(() => {
   if (!candidateId) {
@@ -67,15 +77,41 @@ const [candidate, setCandidate] = useState(null);
       .finally(() => setLoading(false));
   }, []);
 
+  /* ================= Validation ================= */
+  const validateForm = () => {
+    const newErrors = {
+      decision: !decision,
+      comment: !comment.trim(),
+      skills: {},
+    };
+
+    // Validate verified skills have years of experience
+    skills.forEach((skill, index) => {
+      if (skill.isVerified && (!skill.verifiedYearsOfExperience || skill.verifiedYearsOfExperience <= 0)) {
+        newErrors.skills[index] = true;
+      }
+    });
+
+    setErrors(newErrors);
+
+    // Check if there are any errors
+    const hasSkillErrors = Object.keys(newErrors.skills).length > 0;
+    return !newErrors.decision && !newErrors.comment && !hasSkillErrors;
+  };
+
   /* ================= Save Review ================= */
   const handleSave = async () => {
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
     try {
       setSaving(true);
 
       const payload = {
         candidateJobID: Number(candidateJobId),
         comment,
-        decision: "Pending",
+        decision,
         skills: skills.map((s) => ({
           skillId: s.skillId,
           isVerified: s.isVerified,
@@ -270,11 +306,51 @@ const [candidate, setCandidate] = useState(null);
                     copy[index].verifiedYearsOfExperience =
                       e.target.value;
                     setSkills(copy);
+                    // Clear error for this skill
+                    const newErrors = { ...errors };
+                    delete newErrors.skills[index];
+                    setErrors(newErrors);
                   }}
+                  error={errors.skills[index]}
+                  helperText={
+                    errors.skills[index]
+                      ? "Years required for verified skill"
+                      : ""
+                  }
+                  inputProps={{ min: 0 }}
                 />
               </Grid>
             </Grid>
           ))}
+        </CardContent>
+      </Card>
+
+      {/* ================= Decision ================= */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" mb={2}>
+            Decision
+          </Typography>
+
+          <FormControl fullWidth required error={errors.decision}>
+            <InputLabel>Select Decision</InputLabel>
+            <Select
+              value={decision}
+              label="Select Decision"
+              onChange={(e) => {
+                setDecision(e.target.value);
+                setErrors({ ...errors, decision: false });
+              }}
+            >
+              <MenuItem value="Shortlist">Shortlist</MenuItem>
+              <MenuItem value="Reject">Reject</MenuItem>
+            </Select>
+            {errors.decision && (
+              <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
+                Decision is required
+              </Typography>
+            )}
+          </FormControl>
         </CardContent>
       </Card>
 
@@ -289,9 +365,16 @@ const [candidate, setCandidate] = useState(null);
             fullWidth
             multiline
             rows={3}
+            required
+            label="Comment"
             placeholder="Enter your review comments"
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={(e) => {
+              setComment(e.target.value);
+              setErrors({ ...errors, comment: false });
+            }}
+            error={errors.comment}
+            helperText={errors.comment ? "Comment is required" : ""}
           />
         </CardContent>
       </Card>
