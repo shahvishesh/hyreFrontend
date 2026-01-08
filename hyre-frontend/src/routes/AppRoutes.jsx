@@ -56,6 +56,12 @@ import AssignReviewers from "../pages/reviewer-management/AssignReviewers";
 import ModifyReviewers from "../pages/reviewer-management/ModifyReviewers";
 import ViewReviewers from "../pages/reviewer-management/ViewReviewers";
 
+import RecruiterScreeningLayout from "../pages/recruiter-screening-decision/RecruiterScreeningLayout";
+import RecruiterScreeningJobsList from "../pages/recruiter-screening-decision/RecruiterScreeningJobsList";
+import RecruiterScreeningCandidatesList from "../pages/recruiter-screening-decision/RecruiterScreeningCandidatesList";
+import RecruiterScreeningDecision from "../pages/recruiter-screening-decision/RecruiterScreeningDecision";
+import RecruiterScreeningViewDecision from "../pages/recruiter-screening-decision/RecruiterScreeningViewDecision";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -140,6 +146,17 @@ export default function AppRoutes() {
             <Route path="modify/:jobId" element={<ModifyReviewers />} />
             <Route path="view/:jobId" element={<ViewReviewers />} />
           </Route>
+
+          <Route path="recruiter-screening" element={<RecruiterScreeningLayout />}>
+            <Route index element={<RecruiterScreeningJobsList />} />
+            <Route
+              path=":jobId"
+              element={<RecruiterScreeningCandidatesList />}
+            />
+            <Route path=":jobId/candidate/:candidateId/make-decision" element={<RecruiterScreeningDecision />} />
+            <Route path=":jobId/candidate/:candidateId/view-decision" element={<RecruiterScreeningViewDecision />} />
+            
+          </Route> 
 
         </Route>
       </Route>
