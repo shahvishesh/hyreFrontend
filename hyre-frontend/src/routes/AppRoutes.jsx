@@ -62,6 +62,13 @@ import RecruiterScreeningCandidatesList from "../pages/recruiter-screening-decis
 import RecruiterScreeningDecision from "../pages/recruiter-screening-decision/RecruiterScreeningDecision";
 import RecruiterScreeningViewDecision from "../pages/recruiter-screening-decision/RecruiterScreeningViewDecision";
 
+import InterviewerManagementLayout from "../pages/interviewer-management/InterviewerManagementLayout";
+import PendingInterviewerAssignments from "../pages/interviewer-management/PendingInterviewerAssignments";
+import CompletedInterviewerAssignments from "../pages/interviewer-management/CompletedInterviewerAssignments";
+import AssignInterviewers from "../pages/interviewer-management/AssignInterviewers"; 
+import ViewInterviewers from "../pages/interviewer-management/ViewInterviewers";
+import ModifyInterviewers from "../pages/interviewer-management/ModifyInterviewers";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -157,6 +164,16 @@ export default function AppRoutes() {
             <Route path=":jobId/candidate/:candidateId/view-decision" element={<RecruiterScreeningViewDecision />} />
             
           </Route> 
+
+          <Route path="interviewer-management" element={<InterviewerManagementLayout />}>
+            <Route index element={<PendingInterviewerAssignments />} />
+            <Route path="pending" element={<PendingInterviewerAssignments />} />
+            <Route path="completed" element={<CompletedInterviewerAssignments />} />
+            <Route path="assign/:jobId" element={<AssignInterviewers/>} /> 
+            <Route path="view/:jobId" element={<ViewInterviewers />} />
+            <Route path="modify/:jobId" element={<ModifyInterviewers />} />
+          
+          </Route>
 
         </Route>
       </Route>

@@ -17,7 +17,6 @@ export default function DashboardLayout() {
           flexGrow: 1,
           p: 3,
           mt: 8,
-          ml: `${drawerWidth}px`,
         }}
       >
         <Outlet />
