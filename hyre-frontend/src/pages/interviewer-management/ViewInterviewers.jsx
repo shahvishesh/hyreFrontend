@@ -3,193 +3,148 @@ import {
   Button,
   Card,
   CardContent,
-  Checkbox,
-  IconButton,
-  MenuItem,
+  Chip,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  TextField,
   Typography,
   CircularProgress,
+  Alert,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { ArrowBack } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import axiosInstance from "../../api/axiosInstance";
+import { getJobById } from "../../api/jobs.api";
 
-/* ================= ROLES ================= */
-const INTERVIEW_ROLES = [
-  "Technical",
-  "HR",
-  "Managerial",
-];
-
-export default function AssignInterviewers() {
+export default function ViewInterviewers() {
   const { jobId } = useParams();
   const navigate = useNavigate();
 
-  const [employees, setEmployees] = useState([]);
-  const [selected, setSelected] = useState([]);
+  const [jobDetails, setJobDetails] = useState(null);
+  const [assignedInterviewers, setAssignedInterviewers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
-  /* ================= LOAD EMPLOYEES ================= */
+  /* ================= LOAD DATA ================= */
   useEffect(() => {
-    axiosInstance
-      .get("/api/JobInterviewer/employees?role=Interviewer,Hr")
-      .then((res) => setEmployees(res.data))
-      .catch(() =>
-        toast.error("Failed to load employees")
-      )
+    if (!jobId || isNaN(Number(jobId))) {
+      setError("Invalid job ID");
+      setLoading(false);
+      return;
+    }
+
+    Promise.all([
+      getJobById(jobId),
+      axiosInstance.get(
+        `/api/JobInterviewer/${jobId}/assigned-interviewers`
+      ),
+    ])
+      .then(([jobRes, assignedRes]) => {
+        setJobDetails(jobRes.data);
+        setAssignedInterviewers(assignedRes.data.interviewers || []);
+        setError(null);
+      })
+      .catch((err) => {
+        const errorMsg = err.response?.data?.message || "Failed to load data";
+        setError(errorMsg);
+        toast.error(errorMsg);
+      })
       .finally(() => setLoading(false));
-  }, []);
-
-  /* ================= MOVE DOWN ================= */
-  const handleSelect = (emp) => {
-    setEmployees((prev) =>
-      prev.filter((e) => e.userId !== emp.userId)
-    );
-
-    setSelected((prev) => [
-      ...prev,
-      { ...emp, interviewRole: "" },
-    ]);
-  };
-
-  /* ================= MOVE UP ================= */
-  const handleRemove = (emp) => {
-    setSelected((prev) =>
-      prev.filter((e) => e.userId !== emp.userId)
-    );
-
-    setEmployees((prev) => [...prev, emp]);
-  };
-
-  /* ================= ROLE CHANGE ================= */
-  const handleRoleChange = (id, value) => {
-    setSelected((prev) =>
-      prev.map((e) =>
-        e.userId === id
-          ? { ...e, interviewRole: value }
-          : e
-      )
-    );
-  };
-
-  /* ================= SUBMIT ================= */
-  const handleSubmit = async () => {
-    if (selected.length === 0) {
-      toast.error("Select at least one interviewer");
-      return;
-    }
-
-    if (selected.some((s) => !s.interviewRole)) {
-      toast.error("Assign role to all interviewers");
-      return;
-    }
-
-    const payload = {
-      jobID: Number(jobId),
-      assignments: selected.map((s) => ({
-        interviewerID: s.userId,
-        interviewRole: s.interviewRole,
-      })),
-    };
-
-    try {
-      setSaving(true);
-      await axiosInstance.post(
-        "/api/JobInterviewer/assign-v2",
-        payload
-      );
-
-      toast.success("Interviewers assigned");
-      navigate(-1);
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-          "Assignment failed"
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
+  }, [jobId]);
 
   if (loading) return <CircularProgress />;
 
+  if (error) {
+    return (
+      <Box>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBack />}
+          onClick={() => navigate(-1)}
+        >
+          Go Back
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box>
+      {/* ================= HEADER & JOB DETAILS ================= */}
+      <Button
+        startIcon={<ArrowBack />}
+        onClick={() => navigate(-1)}
+        sx={{ mb: 2 }}
+      >
+        Back
+      </Button>
+
       <Typography variant="h5" mb={3}>
-        Assign Interviewers
+        View Interviewer Assignments
       </Typography>
 
-      {/* ================= AVAILABLE ================= */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h6" mb={2}>
-            Available Employees
-          </Typography>
-
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Designation</TableCell>
-                <TableCell>System Role</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {employees.map((emp) => (
-                <TableRow key={emp.userId}>
-                  <TableCell>
-                    <Checkbox
-                      onChange={() =>
-                        handleSelect(emp)
-                      }
+      {jobDetails && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Job Details
+            </Typography>
+            <Box display="flex" flexDirection="column" gap={1}>
+              <Box display="flex" gap={2} flexWrap="wrap">
+                <Typography>
+                  <strong>Title:</strong> {jobDetails.title}
+                </Typography>
+                <Typography>
+                  <strong>Company:</strong> {jobDetails.companyName}
+                </Typography>
+                <Typography>
+                  <strong>Location:</strong> {jobDetails.location || "N/A"}
+                </Typography>
+              </Box>
+              <Box display="flex" gap={2} flexWrap="wrap">
+                <Typography>
+                  <strong>Experience:</strong> {jobDetails.minExperience} - {jobDetails.maxExperience} yrs
+                </Typography>
+                <Typography>
+                  <strong>Type:</strong> {jobDetails.jobType}
+                </Typography>
+                <Typography>
+                  <strong>Workplace:</strong> {jobDetails.workplaceType}
+                </Typography>
+                <Chip label={jobDetails.status} color="primary" size="small" />
+              </Box>
+              {jobDetails.skills && jobDetails.skills.length > 0 && (
+                <Box>
+                  <Typography component="span">
+                    <strong>Skills:</strong>{" "}
+                  </Typography>
+                  {jobDetails.skills.map((skill, idx) => (
+                    <Chip
+                      key={skill.skillID || idx}
+                      label={skill.skillName}
+                      size="small"
+                      sx={{ mr: 0.5, mb: 0.5 }}
                     />
-                  </TableCell>
-
-                  <TableCell>
-                    {emp.fullName}
-                  </TableCell>
-                  <TableCell>{emp.email}</TableCell>
-                  <TableCell>
-                    {emp.designation || "-"}
-                  </TableCell>
-                  <TableCell>
-                    {emp.systemRole}
-                  </TableCell>
-                </TableRow>
-              ))}
-
-              {employees.length === 0 && (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    align="center"
-                  >
-                    No employees
-                  </TableCell>
-                </TableRow>
+                  ))}
+                </Box>
               )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* ================= SELECTED ================= */}
+      {/* ================= ASSIGNED INTERVIEWERS ================= */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" mb={2}>
-            Selected Interviewers
+            Assigned Interviewers
           </Typography>
 
           <Table size="small">
@@ -200,74 +155,43 @@ export default function AssignInterviewers() {
                 <TableCell>Designation</TableCell>
                 <TableCell>System Role</TableCell>
                 <TableCell>Interviewer Role</TableCell>
-                <TableCell />
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {selected.map((emp) => (
-                <TableRow key={emp.userId}>
+              {assignedInterviewers.map((interviewer) => (
+                <TableRow key={interviewer.interviewerID}>
                   <TableCell>
-                    {emp.fullName}
-                  </TableCell>
-                  <TableCell>{emp.email}</TableCell>
-                  <TableCell>
-                    {emp.designation || "-"}
+                    {interviewer.fullName || "-"}
                   </TableCell>
                   <TableCell>
-                    {emp.systemRole}
+                    {interviewer.email || "-"}
                   </TableCell>
-
                   <TableCell>
-                    <TextField
-                      select
+                    {interviewer.designation || "-"}
+                  </TableCell>
+                  <TableCell>
+                    {interviewer.systemRoles && interviewer.systemRoles.length > 0 
+                      ? interviewer.systemRoles.join(", ") 
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    <Chip 
+                      label={interviewer.interviewRole} 
+                      color="primary" 
                       size="small"
-                      value={
-                        emp.interviewRole
-                      }
-                      onChange={(e) =>
-                        handleRoleChange(
-                          emp.userId,
-                          e.target.value
-                        )
-                      }
-                    >
-                      <MenuItem value="">
-                        Select
-                      </MenuItem>
-                      {INTERVIEW_ROLES.map(
-                        (r) => (
-                          <MenuItem
-                            key={r}
-                            value={r}
-                          >
-                            {r}
-                          </MenuItem>
-                        )
-                      )}
-                    </TextField>
-                  </TableCell>
-
-                  <TableCell>
-                    <IconButton
-                      color="error"
-                      onClick={() =>
-                        handleRemove(emp)
-                      }
-                    >
-                      <Delete />
-                    </IconButton>
+                    />
                   </TableCell>
                 </TableRow>
               ))}
 
-              {selected.length === 0 && (
+              {assignedInterviewers.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={5}
                     align="center"
                   >
-                    No interviewers selected
+                    No interviewers assigned to this job
                   </TableCell>
                 </TableRow>
               )}
@@ -275,15 +199,6 @@ export default function AssignInterviewers() {
           </Table>
         </CardContent>
       </Card>
-
-      {/* ================= SUBMIT ================= */}
-      <Button
-        variant="contained"
-        onClick={handleSubmit}
-        disabled={saving}
-      >
-        {saving ? "Saving..." : "Assign"}
-      </Button>
     </Box>
   );
 }
