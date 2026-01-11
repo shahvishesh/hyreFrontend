@@ -110,6 +110,13 @@ export default function Sidebar({ drawerWidth }) {
         >
           <ListItemText primary="Interviewer Management" />
         </ListItemButton>
+
+        <ListItemButton 
+          onClick={() => navigate("/dashboard/schedule-interview")}
+          selected={location.pathname.startsWith("/dashboard/schedule-interview")}
+        >
+          <ListItemText primary="Schedule Interview" />
+        </ListItemButton>
       </List>
     </Drawer>
   );

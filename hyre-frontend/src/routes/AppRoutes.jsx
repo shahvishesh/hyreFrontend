@@ -69,6 +69,12 @@ import AssignInterviewers from "../pages/interviewer-management/AssignInterviewe
 import ViewInterviewers from "../pages/interviewer-management/ViewInterviewers";
 import ModifyInterviewers from "../pages/interviewer-management/ModifyInterviewers";
 
+import ScheduleInterviewLayout from "../pages/schedule-interview/ScheduleInterviewLayout";
+import ScheduleInterviewJobsList from "../pages/schedule-interview/ScheduleInterviewJobsList";
+import ScheduleInterviewCandidatesList from "../pages/schedule-interview/ScheduleInterviewCandidatesList";
+//import ScheduleInterviewRounds from "../pages/schedule-interview/ScheduleInterviewRounds";
+/*import ViewScheduledInterviewRounds from "../pages/schedule-interview/ViewScheduledInterviewRounds"; */
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -173,6 +179,13 @@ export default function AppRoutes() {
             <Route path="view/:jobId" element={<ViewInterviewers />} />
             <Route path="modify/:jobId" element={<ModifyInterviewers />} />
           
+          </Route>
+
+          <Route path="schedule-interview" element={<ScheduleInterviewLayout />}>
+            <Route index element={<ScheduleInterviewJobsList />} />
+            <Route path=":jobId" element={<ScheduleInterviewCandidatesList />} />
+            {/* <Route path=":jobId/candidate/:candidateId/schedule" element={<ScheduleInterviewRounds />} /> */}
+            {/* <Route path=":jobId/candidate/:candidateId/view" element={<ViewScheduledInterviewRounds />} /> */}
           </Route>
 
         </Route>
