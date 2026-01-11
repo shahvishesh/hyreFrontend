@@ -5,14 +5,105 @@ import {
   ListItemButton,
   ListItemText,
   Toolbar,
+  ListItemIcon,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import { ListItemIcon } from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import WorkIcon from "@mui/icons-material/Work";
+import PeopleIcon from "@mui/icons-material/People";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import InterviewsIcon from "@mui/icons-material/Event";
+import FeedbackIcon from "@mui/icons-material/Feedback";
+import DecisionIcon from "@mui/icons-material/Gavel";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import { hasRole } from "../../utils/auth";
+import { PERMISSIONS } from "../../utils/roles";
 
 export default function Sidebar({ drawerWidth }) {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Menu items configuration with role-based access
+  const menuItems = [
+    {
+      label: "Dashboard",
+      path: "/dashboard",
+      icon: <DashboardIcon />,
+      permissions: PERMISSIONS.DASHBOARD,
+      exact: true,
+    },
+    {
+      label: "Jobs",
+      path: "/dashboard/jobs",
+      icon: <WorkIcon />,
+      permissions: PERMISSIONS.JOBS,
+    },
+    {
+      label: "Candidates",
+      path: "/dashboard/candidates",
+      icon: <PeopleIcon />,
+      permissions: PERMISSIONS.CANDIDATES,
+    },
+    {
+      label: "Interviews",
+      path: "/dashboard/interviews",
+      icon: <InterviewsIcon />,
+      permissions: PERMISSIONS.INTERVIEWS,
+    },
+    {
+      label: "Screening",
+      path: "/dashboard/screening",
+      icon: <AssignmentIcon />,
+      permissions: PERMISSIONS.SCREENING,
+    },
+    {
+      label: "Feedback",
+      path: "/dashboard/feedback",
+      icon: <FeedbackIcon />,
+      permissions: PERMISSIONS.FEEDBACK,
+    },
+    {
+      label: "Recruiter Decisions",
+      path: "/dashboard/recruiter-decisions",
+      icon: <DecisionIcon />,
+      permissions: PERMISSIONS.RECRUITER_DECISIONS,
+    },
+    {
+      label: "Recruiter Screening",
+      path: "/dashboard/recruiter-screening",
+      icon: <AssignmentIcon />,
+      permissions: PERMISSIONS.RECRUITER_SCREENING,
+    },
+    {
+      label: "Reviewer Management",
+      path: "/dashboard/reviewer-management",
+      icon: <ManageAccountsIcon />,
+      permissions: PERMISSIONS.REVIEWER_MANAGEMENT,
+    },
+    {
+      label: "Interviewer Management",
+      path: "/dashboard/interviewer-management",
+      icon: <ManageAccountsIcon />,
+      permissions: PERMISSIONS.INTERVIEWER_MANAGEMENT,
+    },
+    {
+      label: "Schedule Interview",
+      path: "/dashboard/schedule-interview",
+      icon: <ScheduleIcon />,
+      permissions: PERMISSIONS.SCHEDULE_INTERVIEW,
+    },
+    {
+      label: "Role Management",
+      path: "/dashboard/admin/roles",
+      icon: <AdminPanelSettingsIcon />,
+      permissions: PERMISSIONS.ADMIN,
+    },
+  ];
+
+  // Filter menu items based on user roles
+  const visibleMenuItems = menuItems.filter(item => hasRole(item.permissions));
 
   return (
     <Drawer
@@ -27,96 +118,21 @@ export default function Sidebar({ drawerWidth }) {
     >
       <Toolbar />
       <List>
-        <ListItem disablePadding>
-          <ListItemButton 
-            onClick={() => navigate("/dashboard")}
-            selected={location.pathname === "/dashboard"}
-          >
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem disablePadding>
-          <ListItemButton 
-            onClick={() => navigate("/dashboard/jobs")}
-            selected={location.pathname.startsWith("/dashboard/jobs")}
-          >
-            <ListItemText primary="Jobs" />
-          </ListItemButton>
-        </ListItem>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/candidates")}
-          selected={location.pathname.startsWith("/dashboard/candidates")}
-        >
-          <ListItemText primary="Candidates" />
-        </ListItemButton>
-
-        <ListItemButton
-          onClick={() => navigate("/dashboard/screening")}
-          selected={location.pathname.startsWith("/dashboard/screening")}
-        >
-          <ListItemText primary="Screening" />
-        </ListItemButton>
-
-        <ListItemButton
-          onClick={() => navigate("/dashboard/admin/roles")}
-          selected={location.pathname.startsWith("/dashboard/admin/roles")}
-        >
-          <ListItemIcon>
-            <AdminPanelSettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Role Management" />
-        </ListItemButton>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/interviews")}
-          selected={location.pathname.startsWith("/dashboard/interviews")}
-        >
-          <ListItemText primary="Interviews" />
-        </ListItemButton>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/feedback")}
-          selected={location.pathname.startsWith("/dashboard/feedback")}
-        >
-          <ListItemText primary="Feedback" />
-        </ListItemButton>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/recruiter-decisions")}
-          selected={location.pathname.startsWith("/dashboard/recruiter-decisions")}
-        >
-          <ListItemText primary="Recruiter Decisions" />
-        </ListItemButton>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/reviewer-management")}
-          selected={location.pathname.startsWith("/dashboard/reviewer-management")}
-        >
-          <ListItemText primary="Reviewer Management" />
-        </ListItemButton>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/recruiter-screening")}
-          selected={location.pathname.startsWith("/dashboard/recruiter-screening")}
-        >
-          <ListItemText primary="Recruiter Screening" />
-        </ListItemButton>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/interviewer-management")}
-          selected={location.pathname.startsWith("/dashboard/interviewer-management")}
-        >
-          <ListItemText primary="Interviewer Management" />
-        </ListItemButton>
-
-        <ListItemButton 
-          onClick={() => navigate("/dashboard/schedule-interview")}
-          selected={location.pathname.startsWith("/dashboard/schedule-interview")}
-        >
-          <ListItemText primary="Schedule Interview" />
-        </ListItemButton>
+        {visibleMenuItems.map((item) => (
+          <ListItem key={item.path} disablePadding>
+            <ListItemButton
+              onClick={() => navigate(item.path)}
+              selected={
+                item.exact
+                  ? location.pathname === item.path
+                  : location.pathname.startsWith(item.path)
+              }
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
     </Drawer>
   );

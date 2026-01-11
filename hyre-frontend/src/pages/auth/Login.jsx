@@ -59,7 +59,7 @@ export default function Login() {
             Login
           </Button>
 
-          <Box mt={2} textAlign="center">
+          {/* <Box mt={2} textAlign="center">
             <Typography variant="body2">
               New user?{" "}
               <Link
@@ -72,7 +72,7 @@ export default function Login() {
                 Register here
               </Link>
             </Typography>
-          </Box>
+          </Box> */}
         </form>
       </Box>
     </Container>

@@ -75,117 +75,138 @@ import ScheduleInterviewCandidatesList from "../pages/schedule-interview/Schedul
 //import ScheduleInterviewRounds from "../pages/schedule-interview/ScheduleInterviewRounds";
 /*import ViewScheduledInterviewRounds from "../pages/schedule-interview/ViewScheduledInterviewRounds"; */
 
+import Unauthorized from "../pages/auth/Unauthorized";
+
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Navigate to="/dashboard" />} />
-
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="/dashboard/jobs" element={<JobsLayout />}>
-            <Route index element={<JobsHome />} />
-            <Route path="list" element={<JobsList />} />
-            <Route path="create" element={<CreateJob />} />
-            <Route path=":jobId" element={<JobDetails />} />
-            <Route path="edit/:jobId" element={<EditJob />} />
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<Dashboard />} />
+          {/* Recruiter Only - Job Management */}
+          <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>        
+              <Route path="jobs" element={<JobsLayout />}>
+                <Route index element={<JobsHome />} />
+                <Route path="list" element={<JobsList />} />
+                <Route path="create" element={<CreateJob />} />
+                <Route path=":jobId" element={<JobDetails />} />
+                <Route path="edit/:jobId" element={<EditJob />} />
+              </Route>
           </Route>
 
-          <Route path="/dashboard/admin" element={<RolesLayout />}>
-            <Route index element={<RolesHome />} />
-            <Route path="roles" element={<UsersRolesList />} />
+          {/* Admin Only - Role Management */}
+          <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+            <Route path="admin" element={<RolesLayout />}>
+              <Route index element={<RolesHome />} />
+              <Route path="roles" element={<UsersRolesList />} />
+            </Route>
           </Route>
 
-
-          <Route path="/dashboard/candidates" element={<CandidatesLayout />}>
-            <Route index element={<CandidatesHome />} />
-            <Route path="create" element={<CreateCandidate />} />
-            <Route
-              path="/dashboard/candidates/upload-excel"
-              element={<UploadCandidatesExcel />}
-            />
-            <Route
-              path="/dashboard/candidates/list"
-              element={<CandidatesList />}
-            />
-            <Route
-              path=":candidateId"
-              element={<CandidateDetails />}
-            />
+          {/* Recruiter Only - Candidates Management */}
+          <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>
+            <Route path="candidates" element={<CandidatesLayout />}>
+              <Route index element={<CandidatesHome />} />
+              <Route path="create" element={<CreateCandidate />} />
+              <Route
+                path="upload-excel"
+                element={<UploadCandidatesExcel />}
+              />
+              <Route
+                path="list"
+                element={<CandidatesList />}
+              />
+              <Route
+                path=":candidateId"
+                element={<CandidateDetails />}
+              />
+            </Route>
           </Route>
 
-          <Route path="screening" element={<ScreeningLayout />}>
-            {/* <Route index element={<ScreeningHome />} /> */}
-            <Route index element={<ScreeningJobsList />} />
-            <Route
-              path=":jobId"
-              element={<JobScreeningCandidates />}
-            />
-            <Route
-              path=":jobId/review/:candidateJobId"
-              element={<ReviewCandidate />}
-            />
+          {/* Reviewer Only - Screening */}
+          <Route element={<ProtectedRoute allowedRoles={["Reviewer"]} />}>
+            <Route path="screening" element={<ScreeningLayout />}>
+              <Route index element={<ScreeningJobsList />} />
+              <Route path=":jobId" element={<JobScreeningCandidates />} />
+              <Route path=":jobId/review/:candidateJobId" element={<ReviewCandidate />} />
+            </Route>
           </Route>
 
-          <Route path="/dashboard/interviews" element={<InterviewsLayout />}>
-            <Route index element={<InterviewsHome />} />
+          {/* Interviewer Only - Interviews */}
+          <Route element={<ProtectedRoute allowedRoles={["Interviewer"]} />}>
+            <Route path="interviews" element={<InterviewsLayout />}>
+              <Route index element={<InterviewsHome />} />
+            </Route>
           </Route>
 
-          <Route path="/dashboard/feedback" element={<FeedbackLayout />}>
-            <Route index element={<FeedbackJobsList />} />
-            <Route path=":jobId" element={<FeedbackCandidatesList />} />
-            <Route path=":jobId/candidate/:candidateId" element={<FeedbackCandidateRounds />} />
-            <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/give-feedback" element={<GiveFeedback />} />
-            <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/view-feedback" element={<ViewFeedback />} />
+          {/* Interviewer Only - Feedback */}
+          <Route element={<ProtectedRoute allowedRoles={["Interviewer"]} />}>
+            <Route path="feedback" element={<FeedbackLayout />}>
+              <Route index element={<FeedbackJobsList />} />
+              <Route path=":jobId" element={<FeedbackCandidatesList />} />
+              <Route path=":jobId/candidate/:candidateId" element={<FeedbackCandidateRounds />} />
+              <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/give-feedback" element={<GiveFeedback />} />
+              <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/view-feedback" element={<ViewFeedback />} />
+            </Route>
           </Route>
 
-          <Route path="/dashboard/recruiter-decisions" element={<RecruiterDecisionLayout />}>
-            <Route index element={<RecruiterDecisionJobsList />} />
-            <Route path=":jobId" element={<RecruiterDecisionCandidatesList />} />
-            <Route path=":jobId/candidate/:candidateId" element={<RecruiterDecisionCandidateRounds />} />
-            <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/decision" element={<RecruiterRoundDecision />} />
-            <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/completed-decision" element={<RecruiterCompletedDecision />} />
-            
+          {/* Recruiter Only - Recruiter Decisions */}
+          <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>
+            <Route path="recruiter-decisions" element={<RecruiterDecisionLayout />}>
+              <Route index element={<RecruiterDecisionJobsList />} />
+              <Route path=":jobId" element={<RecruiterDecisionCandidatesList />} />
+              <Route path=":jobId/candidate/:candidateId" element={<RecruiterDecisionCandidateRounds />} />
+              <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/decision" element={<RecruiterRoundDecision />} />
+              <Route path=":jobId/candidate/:candidateId/round/:candidateRoundId/completed-decision" element={<RecruiterCompletedDecision />} />
+            </Route>
           </Route>
 
-          <Route path="/dashboard/reviewer-management" element={<ReviewerManagementLayout />}>
-            <Route index element={<PendingAssignments />} />
-            <Route path="pending" element={<PendingAssignments />} />
-            <Route path="completed" element={<CompletedAssignments />} />
-            <Route path="assign/:jobId" element={<AssignReviewers />} /> 
-            <Route path="modify/:jobId" element={<ModifyReviewers />} />
-            <Route path="view/:jobId" element={<ViewReviewers />} />
+          {/* Recruiter Only - Reviewer Management */}
+          <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>
+            <Route path="reviewer-management" element={<ReviewerManagementLayout />}>
+              <Route index element={<PendingAssignments />} />
+              <Route path="pending" element={<PendingAssignments />} />
+              <Route path="completed" element={<CompletedAssignments />} />
+              <Route path="assign/:jobId" element={<AssignReviewers />} /> 
+              <Route path="modify/:jobId" element={<ModifyReviewers />} />
+              <Route path="view/:jobId" element={<ViewReviewers />} />
+            </Route>
           </Route>
 
-          <Route path="recruiter-screening" element={<RecruiterScreeningLayout />}>
-            <Route index element={<RecruiterScreeningJobsList />} />
-            <Route
-              path=":jobId"
-              element={<RecruiterScreeningCandidatesList />}
-            />
-            <Route path=":jobId/candidate/:candidateId/make-decision" element={<RecruiterScreeningDecision />} />
-            <Route path=":jobId/candidate/:candidateId/view-decision" element={<RecruiterScreeningViewDecision />} />
-            
+          {/* Recruiter Only - Screening Decisions */}
+          <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>
+            <Route path="recruiter-screening" element={<RecruiterScreeningLayout />}>
+              <Route index element={<RecruiterScreeningJobsList />} />
+              <Route path=":jobId" element={<RecruiterScreeningCandidatesList />} />
+              <Route path=":jobId/candidate/:candidateId/make-decision" element={<RecruiterScreeningDecision />} />
+              <Route path=":jobId/candidate/:candidateId/view-decision" element={<RecruiterScreeningViewDecision />} />
+            </Route>
           </Route> 
 
-          <Route path="interviewer-management" element={<InterviewerManagementLayout />}>
-            <Route index element={<PendingInterviewerAssignments />} />
-            <Route path="pending" element={<PendingInterviewerAssignments />} />
-            <Route path="completed" element={<CompletedInterviewerAssignments />} />
-            <Route path="assign/:jobId" element={<AssignInterviewers/>} /> 
-            <Route path="view/:jobId" element={<ViewInterviewers />} />
-            <Route path="modify/:jobId" element={<ModifyInterviewers />} />
-          
+          {/* Recruiter Only - Interviewer Management */}
+          <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>
+            <Route path="interviewer-management" element={<InterviewerManagementLayout />}>
+              <Route index element={<PendingInterviewerAssignments />} />
+              <Route path="pending" element={<PendingInterviewerAssignments />} />
+              <Route path="completed" element={<CompletedInterviewerAssignments />} />
+              <Route path="assign/:jobId" element={<AssignInterviewers/>} /> 
+              <Route path="view/:jobId" element={<ViewInterviewers />} />
+              <Route path="modify/:jobId" element={<ModifyInterviewers />} />
+            </Route>
           </Route>
 
-          <Route path="schedule-interview" element={<ScheduleInterviewLayout />}>
-            <Route index element={<ScheduleInterviewJobsList />} />
-            <Route path=":jobId" element={<ScheduleInterviewCandidatesList />} />
-            {/* <Route path=":jobId/candidate/:candidateId/schedule" element={<ScheduleInterviewRounds />} /> */}
-            {/* <Route path=":jobId/candidate/:candidateId/view" element={<ViewScheduledInterviewRounds />} /> */}
+          {/* Recruiter Only - Schedule Interview */}
+          <Route element={<ProtectedRoute allowedRoles={["Recruiter"]} />}>
+            <Route path="schedule-interview" element={<ScheduleInterviewLayout />}>
+              <Route index element={<ScheduleInterviewJobsList />} />
+              <Route path=":jobId" element={<ScheduleInterviewCandidatesList />} />
+              {/* <Route path=":jobId/candidate/:candidateId/schedule" element={<ScheduleInterviewRounds />} /> */}
+              {/* <Route path=":jobId/candidate/:candidateId/view" element={<ViewScheduledInterviewRounds />} /> */}
+            </Route>
           </Route>
 
         </Route>
