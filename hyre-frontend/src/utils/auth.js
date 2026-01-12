@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
  */
 export const getUserRoles = () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (!token) return [];
     
     const decoded = jwtDecode(token);
@@ -46,7 +46,7 @@ export const hasAllRoles = (requiredRoles) => {
  * @returns {boolean} True if user has valid token
  */
 export const isAuthenticated = () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken");
   return !!token;
 };
 
@@ -56,7 +56,7 @@ export const isAuthenticated = () => {
  */
 export const getTokenData = () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (!token) return null;
     
     return jwtDecode(token);

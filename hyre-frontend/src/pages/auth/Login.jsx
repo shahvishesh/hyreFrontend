@@ -18,7 +18,15 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       const res = await login(data);
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem(
+        "accessToken",
+        res.data.accessToken
+      );
+
+      localStorage.setItem(
+        "refreshToken",
+        res.data.refreshToken
+      );
 
       toast.success("Login successful");
       navigate("/dashboard");

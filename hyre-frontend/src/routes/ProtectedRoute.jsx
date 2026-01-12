@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode";
  * @param {boolean} requireAll - If true, user must have ALL roles; if false, user needs ANY role (default: false)
  */
 export default function ProtectedRoute({ allowedRoles = null, requireAll = false }) {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken");
 
   if (!token) {
     return <Navigate to="/login" replace />;
@@ -30,7 +30,7 @@ export default function ProtectedRoute({ allowedRoles = null, requireAll = false
     
   } catch (error) {
     console.error("Error decoding token:", error);
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
     return <Navigate to="/login" replace />;
   }
 }
